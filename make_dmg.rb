@@ -1,12 +1,10 @@
 require 'fileutils'
 
-
 class DmgBuilder
-  def initialize(zip_fn, version)
+  def initialize(zip_fn)
     @zip_fn = zip_fn
-    @version = version
 
-    raise ArgumentError unless zip_fn && version
+    raise ArgumentError unless zip_fn
   end
 
   def execute
@@ -29,9 +27,8 @@ class DmgBuilder
   end
 
   def modify_contents
-    FileUtils.makedirs(tmp_fn(app_root_dir))
-    FileUtils.mv(tmp_fn("Mac"), tmp_fn(app_root_dir, "Contents"))
-    FileUtils.chmod("+x", tmp_fn(app_root_dir, "Contents", "MacOS", "Wave Cutter"))
+    FileUtils.mv(tmp_fn("Mac", "Mac.app"), tmp_fn(app_root_dir), verbose: true)
+    FileUtils.chmod("+x", tmp_fn(app_root_dir, "Contents", "MacOS", "Wave Cutter"), verbose: true)
   end
 
   def make_dmg
@@ -47,4 +44,4 @@ class DmgBuilder
   end
 end
 
-DmgBuilder.new(zip_fn = ARGV[0], version = ARGV[1]).execute
+DmgBuilder.new(zip_fn = ARGV[0]).execute
